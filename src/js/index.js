@@ -16,7 +16,6 @@ const state = {};
 const controlSearch = async () => {
     // 1) Get query from view
     const query = searchView.getInput();
-    
 
     if (query) {
         // 2) New search object and add to state
@@ -26,13 +25,19 @@ const controlSearch = async () => {
         searchView.clearInput();
         searchView.clearResults();
         renderLoader(elements.searchRes);
+        try {
+                // 4) Search for recipes
+            await state.search.getResults();
 
-        // 4) Search for recipes
-        await state.search.getResults();
-
-        // 5) Render results on UI
-        clearLoader();
-        searchView.renderResults(state.search.result);
+            // 5) Render results on UI
+            clearLoader();
+            searchView.renderResults(state.search.result);
+        } catch (err){
+            alert('Somthing wrong with the search..');
+            // Clear the Loader if somthing go wrong
+            clearLoader();
+        }
+        
     }
 }
 
@@ -69,14 +74,20 @@ const controlRecipe = async () => {
         // Creat new recipe object
         state.recipe = new Recipe(id);
 
-        // Get recipe data
+        try {
+        // Get recipe data and parse ingredents
         await state.recipe.getRecipe();
+        state.recipe.parseIngredients();
+        
         // Calculet servings and time
         state.recipe.calcTime();
         state.recipe.calcServings();
 
         // Render recipe
         console.log(state.recipe);
+    } catch (err) {
+        alert('Error precessing rcipe!');
+    }
     }
 };
 
@@ -85,4 +96,8 @@ const controlRecipe = async () => {
 
 
 //adding the eventlistner to global 'window'
-window.addEventListener('hashchange', controlRecipe);
+//window.addEventListener('hashchange', controlRecipe);
+//window.addEventListener('load', controlRecipe);
+
+// Creating the eventlistner for the same func exp(controlRecipe)
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
