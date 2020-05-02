@@ -37,6 +37,8 @@ export default class Recipe {
         // declaring to arr[] the old and the new wich is going to return from old arr
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
+        // Creat new arr that use destructing 
+        const units = [...unitsShort, 'kg', 'g'];
 
       //using the map() method to go throghu old arr and after that creat a new arr with newIngredients
       const newIngredients = this.ingredients.map(el => {
